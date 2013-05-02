@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+   <title>Chat Test</title>
+</h:head>
+
+<body>
+
+<h:form id="main">
+   <p:graphicImage library="image"
+                   name="myGMDClogo.jpg"
+                   height="160px"
+                   alt="No Company Logo Here!!!"/>
+   <p:panelGrid style="margin-top:10px">
+      <p:row>
+         <p:column>
+            <p:outputLabel value="Event: "/>
+            <p:inputText id="EventId"
+                         value="#{chatterBean.event}">
+               <p:ajax event="blur"
+                       process="@this"
+                       update="EventId"/>
+            </p:inputText>
+         </p:column>
+      </p:row>
+      <p:row>
+         <p:column>
+            <p:outputLabel value="You Are: "/>
+            <p:inputText id="Chatter"
+                         value="#{chatterBean.chatter1}">
+               <p:ajax event="blur"
+                       process="@this"
+                       update="Chatter"/>
+            </p:inputText>
+            <p:outputLabel value="Talk with: "/>
+            <p:inputText id="Partner"
+                         value="#{chatterBean.chatter2}">
+               <p:ajax event="blur"
+                       process="@this"
+                       update="Partner"/>
+            </p:inputText>
+         </p:column>
+      </p:row>
+      <p:row>
+         <p:column>
+            <p:outputLabel value="Message with:"/>
+            <h:selectOneMenu id="chatList" value="#{chatterBean.selectedChatPartner}" required="true">
+               <f:selectItem itemLabel="Select One" itemValue="" />
+               <f:selectItems value="#{chatterBean.conversationList}" />
+            </h:selectOneMenu>
+         </p:column>
+      </p:row>
+      <p:row>
+         <p:column>
+            <p:inputTextarea id="chatText1"
+                             rows="15"
+                             cols="70"
+                             readonly="true"
+                             value="#{chatterBean.fullMessage}"
+                             autoResize="false" />
+         </p:column>
+      </p:row>
+      <p:row>
+         <p:column>
+            <p:inputTextarea id="chatInput1"
+                             rows="3"
+                             cols="70"
+                             autoResize="false"
+                             value="#{chatterBean.message1}">
+               <p:ajax event="blur"
+                       process="@this"
+                       update="chatInput1"/>
+            </p:inputTextarea>
+         </p:column>
+      </p:row>
+      <p:row>
+         <p:column>
+            <p:commandButton value="Submit"
+                             id="submitButton1"
+                             actionListener="#{chatterBean.submit1}"/>
+         </p:column>
+      </p:row>
+   </p:panelGrid>
+</h:form>
+
+<!-- Little script to handle the update instead of hitting server again -->
+<script type="text/javascript">
+   function handleMessage(data) {
+//      $('.display').html(data);
+      var chatContent = $(PrimeFaces.escapeClientId('form:chatText'));
+      alert("Received a message from server of " + data);
+      if(data === "CLEAR") {
+         chatContent.cleanData();
+      }
+      else {
+         chatContent.append(data + '<br />');
+      }
+
+      // Keep the scroll position
+      chatContent.scrollTop(chatContent.height());
+   }
+</script>
+
+<!-- Set up the Socket Push -->
+<p:socket channel="/gmdc_chat">
+   <p:ajax event="message" update="main:chatText1 main:chatInput1"/>
+</p:socket>
+
+</body>
+</html>

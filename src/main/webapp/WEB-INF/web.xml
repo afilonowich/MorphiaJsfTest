@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+   <context-param>
+      <param-name>primefaces.THEME</param-name>
+      <param-value>gmdc</param-value>
+   </context-param>
+
+   <servlet>
+      <servlet-name>Faces Servlet</servlet-name>
+      <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+   </servlet>
+
+   <!-- The next two servlets are for the PrimePush -->
+   <servlet>
+      <servlet-name>Push Servlet</servlet-name>
+      <servlet-class>org.primefaces.push.PushServlet</servlet-class>
+   </servlet>
+   <servlet-mapping>
+      <servlet-name>Push Servlet</servlet-name>
+      <url-pattern>/primepush/*</url-pattern>
+   </servlet-mapping>
+
+   <servlet-mapping>
+      <servlet-name>Faces Servlet</servlet-name>
+      <url-pattern>*.jsf</url-pattern>
+   </servlet-mapping>
+
+   <session-config>
+      <session-timeout>
+         30
+      </session-timeout>
+   </session-config>
+
+   <!-- Fix from SarahTheButterFly at http://stackoverflow.com/questions/5259145/exception-could-not-find-factory-javax-faces-context-facescontextfactory -->
+   <!--
+   <listener>
+      <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
+   </listener>
+   -->
+
+   <welcome-file-list>
+      <welcome-file>ChatTest.jsf</welcome-file>
+   </welcome-file-list>
+
+</web-app>
